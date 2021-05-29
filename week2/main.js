@@ -26,7 +26,7 @@ const app ={
         .then(res=>{
                     console.log(res);
                     if(res.data.success){
-                        this.getData();
+                        app.getData();
                     }
                 
             }).catch(err=>console.log(err))
