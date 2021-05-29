@@ -1,11 +1,14 @@
+
+const url = 'https://vue3-course-api.hexschool.io';
+const apiPath = 'jacky298';
+
 const app ={
     data:{
-        url:'https://vue3-course-api.hexschool.io/',
-        apiPath:'jacky298',
+        
         productList:[],
     },
     getData(){
-        axios.get(`${this.data.url}api/${this.data.apiPath}/products
+        axios.get(`${url}/api/${apiPath}/admin/products
         `).then((res)=>{
             if(res.data.success){
                 this.data.productList = res.data.products;
@@ -13,16 +16,25 @@ const app ={
             }else{
                 alert(獲取資料失敗);
             }
-        })
-        this.render(this.data.productList);
+        }).catch(err=>console.log(err)
+        )
+        console.log('success');
     },
-    delProducts(){
-
+    delProducts(e){ 
+        const id = e.target.dataset.id;
+        axios.delete(`${url}/api/${apiPath}/admin/product/${id}`)
+        .then(res=>{
+                    console.log(res);
+                    if(res.data.success){
+                        this.getData();
+                    }
+                
+            }).catch(err=>console.log(err))
     },
     render(){
-        const str = '';
+        let str = "";
         this.data.productList.forEach(item=>{
-            str+=`<tr>
+            str += `<tr>
             <td>${item.title}</td>
             <td width="120">
                 ${item.origin_price}
@@ -38,14 +50,20 @@ const app ={
                 </div>
               </td>
               <td width="120">
-              <button type="button" class = "btn btn-sm btn-danger" data-id="${item.id}" data-action="delete">刪除</button>
+              <button type="button" class = "btn btn-sm btn-outline-danger move deleteBtn" data-id="${item.id}" data-action="remove">刪除</button>
               </td>
             </tr>`;
         });
         const productListDom = document.getElementById('productList');
         productListDom.innerHTML = str;
         const productNum = document.getElementById('productCount');
-        productNum.innerHTML =  this.data.productList.length;
+        productNum.textContent =  this.data.productList.length;
+        const deleteBtn = document.querySelectorAll('.deleteBtn');
+        deleteBtn.forEach(
+            btn=>{btn.addEventListener('click',this.delProducts)}
+        )
+
+
     },
     init(){
         //取出cookie
